@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: One row per customer, with cleaned contact details and cast dates.
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+      - name: email
+        description: Null when the source value was blank or not a usable address.
+      - name: phone_number
+        description: Whitespace removed. Formats are otherwise left as they arrive.
+      - name: signup_date
+        data_tests:
+          - not_null
+      - name: status_change_date
+        data_tests:
+          - not_null
+
+  - name: stg_product_events
+    description: One row per product usage event.
+    columns:
+      - name: event_at
+        data_tests:
+          - not_null
+
+  - name: stg_campaign_interactions
+    description: One row per campaign funnel stage reached, per customer and campaign.
+    columns:
+      - name: interaction_at
+        data_tests:
+          - not_null
+
+  - name: stg_consent_registry
+    description: Granted consents, with identifiers made joinable to customers.
+    columns:
+      - name: customer_id
+        description: Prefixed here, so this test proves the transformation lines up.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: consent_at
+        data_tests:
+          - not_null
+
+  - name: stg_consent_purpose_code
+    description: Lookup of processing purposes and their GDPR legal basis.
+    columns:
+      - name: purpose_code
+        data_tests:
+          - unique
+          - not_null

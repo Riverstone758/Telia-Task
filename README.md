@@ -30,12 +30,17 @@ python scripts/load_raw.py
 
 The loading uses raw text so that no data is lost or changed when loading it. The processing happens in the next staging step with dbt.
 
-### 2
+### 2 Staging and aggregations
 
-#### 2.1
+#### 2.1 Staging
 
 The staging step mainly converts dates to a proper date format and does small processing like making email lowercase and removing whitespaces in phone numbers. A comprehensive processing would validate phone numbers with more detail. Currently some fields has two phone numbers.
 
-#### 2.2
+This can be run with the following command:
 
-### 3
+```bash
+cd telia
+dbt build
+```
+
+The staging step only contains views, so nothing will be saved from this step alone.

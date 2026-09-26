@@ -44,3 +44,11 @@ dbt build
 ```
 
 The staging step only contains views, so nothing will be saved from this step alone.
+
+#### 2.2 Aggregations
+
+The output table can be viewed with the following command, after running `dbt build`:
+
+```bash
+dbt show --select int_customer_metrics --limit 10
+```

@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: int_customer_metrics
+    description: >
+      One row per customer with the engagement metrics the segments are built
+      from. All windows are measured from the as_of_date variable.
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+      - name: subscription_plan
+        data_tests:
+          - not_null
+      - name: subscription_status
+        data_tests:
+          - not_null
+      - name: days_since_status_change
+        description: Days from the last subscription status change to as_of_date.
+        data_tests:
+          - not_null
+
+      - name: logins_last_30d
+        description: Login events in the last 30 days.
+        data_tests:
+          - not_null
+      - name: support_tickets_last_90d
+        description: Support ticket events in the last 90 days.
+        data_tests:
+          - not_null
+      - name: active_days_last_14d
+        description: Distinct days with any product event, not only logins.
+        data_tests:
+          - not_null
+      - name: active_days_prior_14d
+        description: The same count for days 14 to 27, used to detect decline.
+        data_tests:
+          - not_null
+      - name: login_days_last_14d
+        description: Distinct days with a login in the last 14 days.
+        data_tests:
+          - not_null
+      - name: events_30_to_60d_ago
+        description: Events in the 30 to 60 day window, used to spot lapsed activity.
+        data_tests:
+          - not_null
+
+      - name: days_since_last_activity
+        description: Null when the customer has never had a product event.
+      - name: days_since_last_login
+        description: Null when the customer has never logged in.
+
+      - name: delivered_last_60d
+        description: Messages delivered in the last 60 days, counted once per send.
+        data_tests:
+          - not_null
+      - name: opened_last_60d
+        description: Delivered messages that were also opened.
+        data_tests:
+          - not_null
+      - name: open_rate_last_60d
+        description: Opened deliveries over deliveries. Null when nothing was delivered.
+      - name: open_rate_before_churn
+        description: Open rate before the churn date. Only set for churned customers.

@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: mart_audience_segments
+    description: >
+      One row per customer and segment. A customer holding marketing consent can
+      appear in several segments, or in none.
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: segment_name
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - high_value_engaged
+                  - at_risk_dormant
+                  - upgrade_candidate
+                  - winback_target
+                  - engagement_declining

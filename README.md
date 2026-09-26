@@ -52,3 +52,15 @@ The output table can be viewed with the following command, after running `dbt bu
 ```bash
 dbt show --select int_customer_metrics --limit 10
 ```
+
+### 3 Audience Segment Definitions
+
+Two of the segments had zero customers and one of them had one.
+
+To see the result, please run:
+
+```bash
+dbt show --limit 10 --inline "select segment_name, count(*) as customers
+                     from {{ ref('mart_audience_segments') }}
+                     group by 1 order by 2 desc"
+```

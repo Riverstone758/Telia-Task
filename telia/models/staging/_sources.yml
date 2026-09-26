@@ -1,0 +1,94 @@
+version: 2
+
+sources:
+  - name: raw
+    description: CSV files loaded by scripts/load_raw.py. Every column is text.
+    schema: raw
+    tables:
+      - name: customers
+        description: One row per customer, with current subscription state.
+        columns:
+          - name: customer_id
+            data_tests:
+              - unique
+              - not_null
+          - name: subscription_plan
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [basic, standard, premium]
+          - name: subscription_status
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [active, churned, paused]
+
+      - name: product_events
+        description: One row per product usage event.
+        columns:
+          - name: event_id
+            data_tests:
+              - unique
+              - not_null
+          - name: customer_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'customers')
+                    field: customer_id
+          - name: event_type
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [login, stream_start, feature_use, support_ticket]
+
+      - name: campaign_interactions
+        description: >
+          Campaign funnel events. One send to one customer produces several
+          rows, one per funnel stage reached.
+        columns:
+          - name: interaction_id
+            data_tests:
+              - unique
+              - not_null
+          - name: customer_id
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'customers')
+                    field: customer_id
+          - name: interaction_type
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [sent, delivered, opened, clicked, unsubscribed]
+          - name: channel
+            data_tests:
+              - accepted_values:
+                  arguments:
+                    values: [email, push, sms, paid_social]
+
+      - name: consent_registry
+        description: Granted consents. Holds no revocation or expiry.
+        columns:
+          - name: customer_id
+            description: Numeric part only, so needs a CUST_ prefix to join to customers.
+            data_tests:
+              - not_null
+          - name: purpose_code
+            data_tests:
+              - not_null
+              - relationships:
+                  arguments:
+                    to: source('raw', 'consent_purpose_code')
+                    field: purpose_code
+
+      - name: consent_purpose_code
+        description: Lookup of processing purposes and their GDPR legal basis.
+        columns:
+          - name: purpose_code
+            data_tests:
+              - unique
+              - not_null

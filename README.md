@@ -1,5 +1,3 @@
-# Telia Data Owner and Engineer Task
-
 The project uses DuckDB and dbt to create the models.
 
 ## Setup
@@ -64,3 +62,13 @@ dbt show --limit 10 --inline "select segment_name, count(*) as customers
                      from {{ ref('mart_audience_segments') }}
                      group by 1 order by 2 desc"
 ```
+
+### 4 Tests
+
+The schemas can be found inside the respective directories inside the `models` directory.
+
+The schemas include automated tests based on the types and expected contents in the tables.
+
+The custom test is inside the `tests` directory. It tests if the marketing customers has given a marketing consent.
+
+The tests can be run with `dbt test`. To run the custom test specifically, please run `dbt test --select assert_segments_require_marketing_consent`.

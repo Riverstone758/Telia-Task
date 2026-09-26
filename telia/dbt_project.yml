@@ -1,0 +1,19 @@
+name: "telia"
+version: "1.0.0"
+profile: "telia"
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  as_of_date: "2025-07-03"
+
+models:
+  telia:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: table
